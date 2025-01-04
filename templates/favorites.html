@@ -1,0 +1,62 @@
+{% include 'base.html' %}
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Your Favorite Products</h2>
+    
+    {% if favorites %}
+        <div class="row">
+            {% for favorite in favorites %}
+                <div class="col-md-3 col-sm-4 col-6">
+                    <div class="card mb-4 shadow-sm border-light rounded hover-shadow">
+                        <img src="{{ favorite.product.image }}" class="card-img-top rounded-top" alt="{{ favorite.product.name }}" style="height: 200px; width: 100%; object-fit: contain;">
+                        <div class="card-body text-center p-2">
+                            <p class="card-title">
+                                <a href="{% url 'product' favorite.product.id %}" class="text-decoration-none text-dark">
+                                    {{ favorite.product.name }}
+                                </a>
+                            </p>
+                            <p class="card-text text-muted" style="font-size: 0.875rem;">{{ favorite.product.description|truncatewords:5 }}</p>
+                            <div class="d-flex justify-content-between">
+                                <form method="POST" action="{% url 'remove_from_favorites' favorite.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-danger btn-sm mt-2 rounded-pill shadow-sm" style="transition: all 0.3s ease;">
+                                        <i class="fas fa-heart-broken"></i> Remove
+                                    </button>
+                                </form>
+                                <form method="POST" action="{% url 'add_to_cart' favorite.product.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-gradient btn-sm mt-2 rounded-pill shadow-sm" style="background: linear-gradient(45deg, #007bff, #00bfff); color: white; border: none; transition: all 0.3s ease;">
+                                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center mt-5">You have no favorite products yet.</p>
+    {% endif %}
+</div>
+
+<style>
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .card.hover-shadow {
+        transition: all 0.3s ease;
+    }
+    
+    .card.hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+    
+    .btn-gradient:hover {
+        background: linear-gradient(45deg, #0056b3, #0099cc) !important;
+    }
+</style>
+{% endblock %}
